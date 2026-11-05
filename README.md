@@ -41,3 +41,7 @@ provisional are defaults, not gospel.
 
 No media, credentials or tokens are included. `yt_analytics.py` expects your own Google OAuth client and
 creates its own read-only token locally.
+
+## License
+
+MIT, see [LICENSE](LICENSE). Use it, adapt it, build on it.
