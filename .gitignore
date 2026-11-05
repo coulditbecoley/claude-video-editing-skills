@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.mp4
+*.mov
+*.wav
+*.m4a
+*.mp3
+*.png
+*.jpg
+token.json
+client_secret*.json
+.env*
