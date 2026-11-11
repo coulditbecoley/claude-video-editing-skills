@@ -1,26 +1,53 @@
 // Renders every on-screen graphic for the edit as a transparent PNG sized in 4K canvas pixels.
 // Run: NODE_PATH=<dir with playwright> node render.mjs   -> out/*.png + out/manifest.json
-import { chromium } from "file:///~/Code/market-analyzer/node_modules/playwright/index.mjs";
+import { chromium } from "playwright";   // resolves via a node_modules link above this file (PC: junction to market-analyzer; pod: /opt/node)
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 // Fail loudly if a web font didn't load: Chromium silently swaps in a lookalike otherwise.
-// Checks the first family of every element under #c that holds text.
+// For every element under #c that holds text in a WEB_FONTS family, each character needs a LOADED FontFace of that
+// family covering the element's computed weight, style AND the character's unicode-range (Google splits a family
+// into subset faces; a loaded Latin face does not cover a failed Greek one). Families outside WEB_FONTS are system
+// fonts and are not checked. Keep WEB_FONTS in step with the @import line in CSS.
+const WEB_FONTS = ["Space Grotesk", "Inter"];
 async function assertFonts(page, label) {
-  const bad = await page.evaluate(() => {
-    const used = new Set([...document.querySelectorAll("#c, #c *")]
-      .filter((e) => [...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()))
-      .map((e) => getComputedStyle(e).fontFamily.split(",")[0].replace(/["']/g, "").trim()));
-    return [...used].filter((n) => ![...document.fonts].some((f) => f.family.replace(/["']/g, "") === n && f.status === "loaded"));
-  });
-  if (bad.length) throw new Error(`${label}: font fell back, not loaded: ${bad.join(", ")}`);
+  const bad = await page.evaluate((web) => {
+    const ranges = (ur) => (ur || "U+0-10FFFF").split(",").map((r) => {
+      const [a, b] = r.trim().replace(/^U\+/i, "").split("-");
+      const lo = parseInt(a.replace(/\?/g, "0"), 16), hi = parseInt((b || a).replace(/\?/g, "F"), 16);
+      return [lo, hi];
+    });
+    const faceFor = (f, wt, st) => {
+      const [lo, hi = lo] = String(f.weight).trim().split(/\s+/).map(Number);   // "700" or a variable "100 900"
+      const italic = f.style !== "normal";
+      return wt >= lo && wt <= hi && (st === "normal" ? !italic : italic);
+    };
+    const out = new Set();
+    for (const e of document.querySelectorAll("#c, #c *")) {
+      const text = [...e.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").replace(/\s/g, "");
+      if (!text) continue;
+      const cs = getComputedStyle(e);
+      const fam = cs.fontFamily.split(",")[0].replace(/["']/g, "").trim();
+      if (!web.includes(fam)) continue;
+      const wt = Number(cs.fontWeight), st = cs.fontStyle === "normal" ? "normal" : "italic";
+      const faces = [...document.fonts].filter((f) => f.family.replace(/["']/g, "") === fam && faceFor(f, wt, st));
+      if (!faces.some((f) => f.status === "loaded")) { out.add(`${fam} ${wt}${st === "italic" ? " italic" : ""}`); continue; }
+      for (const ch of new Set(text)) {
+        const cp = ch.codePointAt(0);
+        const cover = faces.filter((f) => ranges(f.unicodeRange).some(([lo, hi]) => cp >= lo && cp <= hi));
+        if (cover.length && !cover.some((f) => f.status === "loaded")) out.add(`${fam} ${wt} U+${cp.toString(16).toUpperCase()}`);
+      }
+    }
+    return [...out];
+  }, WEB_FONTS);
+  if (bad.length) throw new Error(`${label}: web font face not loaded (would fall back): ${bad.join(", ")}`);
 }
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT = join(HERE, "out");
 const LOGOS = join(HERE, "..", "logos");
-const PORTRAITS = "~/FenrirVault/Projects/Asgard Agents/Canvas Images";
+const PORTRAITS = process.env.PORTRAITS_DIR ?? "~/FenrirVault/Projects/Asgard Agents/Canvas Images";
 mkdirSync(OUT, { recursive: true });
 
 const svgPath = (name) => readFileSync(join(LOGOS, `${name}.svg`), "utf8").match(/<path d="([^"]+)"/)[1];
@@ -81,7 +108,7 @@ const stat = (big, small, cls = "gold") =>
 const agent = (n, role) =>
   `<div id="c" class="agent"><img src="${dataUri(`${PORTRAITS}/${n} Round.png`)}"><div class="an">${n}</div><div class="ar">${role}</div></div>`;
 
-const COINS = "~/Projects/CryptoFlow/coins";
+const COINS = process.env.COINS_DIR ?? "~/Projects/CryptoFlow/coins";
 const coin = (dir, name, sub) =>
   `<div id="c" class="glass coin"><img src="${dataUri(`${COINS}/${dir}/logo.png`)}"><div><div class="name">${name}</div><div class="sub">${sub}</div></div></div>`;
 const face = (n) => `<img src="${dataUri(`${PORTRAITS}/${n} Round.png`)}">`;

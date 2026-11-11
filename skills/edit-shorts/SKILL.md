@@ -14,7 +14,9 @@ corrections back into this file.
 
 - **Music and SFX must be non-copyright** (Coley, 2026-10-03). Generate an original instrumental bed per video with ElevenLabs Music (matched to length and mood), and save the prompt and the file in the edit's `audio/` folder as provenance. No commercial or unknown-licence tracks. Generate it in Coley's logged-in browser via Claude in Chrome (ElevenLabs Music tool); no API key.
 
-- Never export. Deliver CapCut drafts; Coley reviews and exports.
+- Never export. Deliver CapCut drafts; Coley reviews and exports. **Exception:** when he asks for Shorts without
+  CapCut or as finished videos, render them headless ("Headless Shorts" below) and copy the finals to the OneDrive
+  review folder.
 - Never modify a CapCut project you didn't build. Never click CapCut's timeline.
 - Facecam: never scaled by a zoom, never grown or resized mid-shot.
 - No em dashes in on-screen copy. Cards say exactly what the product/report says.
@@ -60,8 +62,8 @@ corrections back into this file.
 ## Workflow
 
 1. Long-form edit folder first (voice WAV, literal transcript, silences, facecam crop, brand cards). Cut from the
-   CFR and secrets-redacted source the long-form intake made (edit-longform step 1); if there is no long-form edit,
-   run those two checks here first.
+   source the long-form intake chose (edit-longform step 1: the frame-rate check, then the secrets sweep's printed
+   `EDIT SOURCE:`); if there is no long-form edit, run those two steps here first.
 2. Copy `templates/gen_shorts.c3-demo.py` to `<edit>/shorts/gen_shorts.py`. Write `SHORTS` (pieces by
    word start times; `end=`/`Sx` where an energy check moved an edge), `CARDS`, `CAM_OFF`.
 3. Copy `render_shorts.mjs` (hook titles, end card) and `render_captions.mjs` into `<edit>/graphics/`.
@@ -80,6 +82,24 @@ corrections back into this file.
 6. `uv run ccut build sN.edl.json` for each. Then `verify_draft.py "<title>" sN.edl.json` (DRAFT OK),
    and check that the transition count matches the EDL.
 7. New drafts appear after a CapCut restart. Tell Coley the titles, runtimes and hooks.
+
+## Headless Shorts (no CapCut; 3 AI Setups Challenge, 2026-11-04)
+
+1. Copy `templates/gen_shorts.0939.py` and `templates/render_shorts.0939.py` to `<edit>/shorts/` as `gen_shorts.py` /
+   `render_shorts.py`. `gen_shorts.py` writes one `sN.json` spec per Short (segments with in/out/speed/mute, offsets,
+   images, captions, sfx, bed, voice).
+2. `python <skill>/templates/shorts_qa.py --lint` (in `<edit>/shorts/`) before rendering: the long-form lint through
+   a spec adapter (against `../main.wav.words.json`), plus offsets, timeline bounds, captions (dwell 0.3 s, overlaps)
+   and Shorts floors (FAIL < 0.5 s, WARN < 1.0 s). Details: `shorts_qa.py` docstring.
+3. `python render_shorts.py captions`, then `python render_shorts.py render all` (mux pads audio and pins frames).
+4. `python <skill>/templates/shorts_qa.py` (no flag = final acceptance): the exact final per spec title (missing =
+   FAIL), the long-form deliverable contract, voice clicks per cut, `probe/qa_sheet.jpg`. Exit 1 on any FAIL; same
+   3-pass cap as long-form, then hand over the open items.
+
+## Cloud mode (RunPod)
+
+Headless Shorts can render on a RunPod pod instead of the PC: `py cloud.py send ... --make shorts`, then `up`. The full procedure, costs and pitfalls are in the edit-longform skill, section "Cloud mode". The pilot's Short 1 passed `shorts_qa` with 0 FAIL on the pod. Titles containing `$` or `,` arrive under their real names through transfer copies.
+- When re-rendering one Short, run `shorts_qa.py <n>` with its number. With no number it checks every `sN.json` and overwrites `probe/qa_report.json` (missing finals become FAILs). The pod agent proposed this lesson in acceptance run E, 2026-11-06.
 
 ## Lessons (2026-10-23, Asgard Agents Day 30 Shorts)
 
@@ -136,7 +156,7 @@ Short 3 only as the result-led recut. Never claim "safe", "rug detected" or guar
 
 ## Lessons (2026-11-04, 3 AI Setups Challenge Shorts, rendered without CapCut, 10 polish rounds + 2 Codex audits)
 
-Worked example: `edits/2026-11-03 Recording 0939/shorts/` (`gen_shorts.py`, `render_shorts.py`, `callouts.py`, `qa_round.py`, `probe/`).
+Worked example: `edits/2026-11-03 Recording 0939/shorts/` (`gen_shorts.py`, `render_shorts.py`, `callouts.py`, `probe/`; `qa_round.py` is superseded by `templates/shorts_qa.py`).
 - Frame 0 must carry the finished hook title (start the hook's PNG sequence ~44 frames in, full alpha). Motion comes from a 7% camera punch easing out over 0.4 s and a title slam, with the hit SFX on frame ~1. A whole-frame shake was too much (Codex): dropped.
 - Captions: Whisper stretches word ENDS across pauses. Pick words by overlap, but at real source jumps a word must START inside the piece (0.15 s grace at the head, none in the last 0.12 s). Pause-collapse joins (the gap is a real silence) count as contiguous. Fix the rest with explicit keep/add entries keyed to source times, checked by isolated snippets plus 10 ms energy. Highlight the spoken word gold (one PNG per word state).
 - The voice chain (compression) can expose quiet fillers the earlier transcript missed ("so the, you know, the project"). Re-transcribe after any mix change. A local cut must start inside the preceding silence, or that pause escapes the collapse.
@@ -158,6 +178,10 @@ Worked example: `edits/2026-11-03 Recording 0939/shorts/` (`gen_shorts.py`, `ren
 - All 5 sat below YouTube's similar-Shorts median (relativeRetentionPerformance 0.17 to 0.46, where 0.5 = median). Long-forms lose half their viewers in the first 30 to 45 s (drops at 9, 18 and 27 s).
 
 ## Craft rules from top AI-edited videos (2026-11-04; Wiki: AI Video Editing)
+
+- **From video-use (provisional, 2026-11-04):** same cut-gap safety, `lint_edl.py` and `project.md` session memory (`edit-longform/templates/project.md`) as edit-longform
+  (silence of 400 ms or more = clean cut, 150 to 400 ms = re-hear first, under 150 ms = don't cut). Its readable-duration
+  floors are long-form numbers; Shorts keep their own faster pacing.
 
 - Same planning rules as edit-longform's "Craft rules" section: a beat map first (say | show | where | why), one idea
   per card, real proof at the word, a card or scrim behind every element, the model's own touches kept or cut at review.

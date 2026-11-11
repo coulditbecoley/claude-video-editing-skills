@@ -15,7 +15,7 @@ This is the profile the edit-longform skill reads before every edit. Each rule c
 | The facecam is never cropped, scaled or broken by a zoom. Overlay the cropped cam over zoomed pieces | Asgard Day 1, 2026-09-25, corrected |
 | Audio and picture must be frame-locked. Verify from files, never by clicking the CapCut timeline | Asgard Day 1, 2026-09-25, corrected (0:19-0:35) |
 | The voice lines up with his mouth, not just with the source file: the OBS webcam lags the mic (about 100 ms on Day 30) and the voice chain adds 25 ms. Measure lip sync on every recording (MediaPipe lip landmarks vs voice loudness, band-passed 2-8 Hz, pooled windows) and correct it with SYNC, within a frame | Day 30, 2026-10-23, corrected ("the face cam and the audio speech... do not line up... make it perfect") |
-| Claude never exports or saves video files. Deliver a CapCut draft for Coley to review and export | Asgard Day 1, 2026-09-25, stated |
+| Claude never exports or saves video files in CapCut mode. Deliver a CapCut draft for Coley to review and export. Exception: Rendered MP4 mode when he asks for it without CapCut (approved 2026-10-29) | Asgard Day 1, 2026-09-25, stated; exception 2026-10-29 |
 | Never modify a CapCut project Claude didn't build | 2026-09-25, standing |
 | Facecam sits bottom-right, rounded, in the tight 4:3 crop Coley set in OBS | OBS setup, 2026-09-25, set by Coley |
 | No stutters survive: doubled words, "you know", "um", restarts ("there, the"). Hunt them with a disfluency-primed transcription and a diff of two literal passes, not the default pass | Day 6, 2026-09-29, stated ("cut out any stutters") |
@@ -41,6 +41,27 @@ This is the profile the edit-longform skill reads before every edit. Each rule c
 | Work happens on the monitor Coley names (Day 20, Day 30: the Spectre). Never leave CapCut or a browser on a screen he excluded; nothing ever on his main LG. CapCut windows that launch on the LG are snapped to the Spectre by a watcher (cc_keep_spectre.py) the instant they appear | Day 20, 2026-10-13, stated ("keep it on the Spectre screen"); Day 30, 2026-10-23, stated ("do not move any CapCut or editing portion of the video to my main screen at any time") and chose the instant snap-back |
 | Cut only pauses, ums, stutters, restarts and true repeats. Every line that carries information stays, even when an audit calls it slow (supersedes the Day 20 Codex trims and the Ep 1 "one idea per round" trims) | Day 20 v2, 2026-10-13, corrected ("a lot of transitions cut off valuable information... only cut out pauses and ums and unimportant information") |
 | No repair dissolves on speech cuts. Transitions only on real scene changes, inside a pause | Day 20 v2, 2026-10-13, corrected (same note) |
+
+## Talking-head recipe (CONFIRMED 2026-11-11, "Claude Edits My YouTube Videos v5")
+Coley on the finished v5 edit: "This talking head video edit was absolutely perfect. I loved it. I want you to remember how
+you did this for future talking head edits." Use this as the default for every talking-head long-form. Worked example and
+all scripts: `library/2026-11-09 Claude Edits v5/` (edit folder `Projects/Youtube/edits/2026-11-09 Claude Edits v5/`).
+- **Mode:** Rendered MP4, 4K60, rendered on the PC (3 workers, WSL shut down) and copied to the OneDrive review folder.
+- **Opening:** claim first, then the promise, then a raw-versus-finished demo, then the explanation. No intro or recap.
+- **Cut:** audited word-level cut, every filler and breath trim ear-verified by a second agent, per-piece lip sync kept.
+  Plain framing alternates 1.0 / 1.10 on talking-head cuts, reset per chapter, never changed under a full-screen scene.
+- **Graphics:** about 63% of the runtime is full-screen motion graphics (Nate Herk reference, `motion-style.md` reference 2),
+  all built on the v5 scene engine (`graphics/lib/stage.css|js`, `SCENES.md`): HTML scenes as pure functions of time,
+  dim-then-light emphasis landing on the spoken word, slow 3.5% push, drifting dust, count-ups, typed text, drawn charts.
+  Lower-third chips and chapter launcher cards cover the face stretches. Chips reuse the speaker's own wording.
+- **Joins:** scene to scene is a direct cut; face to scene is a blur-in. No White_Flash anywhere. Last scene holds under
+  a 0.55 s closing fade to black; full-screen end card with Subscribe and two Watch next frames for the last 15 s.
+- **Sound:** a per-video ElevenLabs sound-effects kit made through the API (16 named sounds: tick, light, pop, count, type,
+  draw, strike, wrong, right, impact, slide, scan, whoosh in/out, swell, riser), quiet (0.12 to 0.34), one sound per moment,
+  none over inserts. Stored music beds rendered to one stem ducked under the voice.
+- **Review:** orchestrator plus panes: Claude for foundation and ear checks, Codex for pre-render and picture-evidence
+  audits (three rounds, to SHIP), Kimi for a frame pass. Fix real findings, decline the rest with reasons.
+- **Hand-over:** YouTube Post with 3 titles, emoji description, chapters, GitHub skill link, tags, hashtags.
 
 ## Structure (accepted)
 
@@ -169,6 +190,7 @@ This is the profile the edit-longform skill reads before every edit. Each rule c
 | A long silent build stretch becomes a short muted time-lapse (about 10 s) with a timer card, so the agents are seen working without dead air | 2026-11-03, Claude's answer to "cut out any wasted time, but leave in some clips of the agent's building" |
 | Claims about autonomy, budget and timing follow the project's own build log; work done after a deadline is disclosed on screen where the footage shows it | 2026-11-03, Codex audit adopted (#1-#3, #19) |
 | Cards on full-frame sites sit in clear zones measured per shot | 2026-11-03, Codex audit adopted (#7) |
+| **CONFIRMED: motion-led edits.** About half the runtime is full-screen motion graphics (face cut away, narration continues): animated chapter map, count-ups, progress rings, re-typeset tables and drawn-on charts, lit icon rows, lower-third chips on the talking head, screens in floating frames. Blur-in entrances, not bouncy pops. Full spec: edit-longform `motion-style.md`. Overrides the face-bubble rule below | 2026-11-06, Coley on the first cloud edit: "needs a lot more motion and high quality tables, charts, slides and icons", with a reference edit to copy the style of (not the content) |
 
 ## Retention (provisional, channel data 2026-11-04)
 
@@ -183,8 +205,21 @@ This is the profile the edit-longform skill reads before every edit. Each rule c
 - Beat map first: a "what I say / what's on screen" table is the first graphics artifact, checked before anything is built.
 - One idea, one graphic, held long enough to read. His audience pushed back on a graphic per sentence.
 - Chapters: big numeral cards ("01 THE RULES") plus a recurring colour-coded progress strip; one fixed recurring segment card per series.
-- When a graphic needs the full frame, keep the face on screen as a round bubble (bottom right, clear of the duration badge) instead of cutting it.
+- SUPERSEDED 2026-11-06 by motion-led edits: full-screen graphics now cut the face away. Keep the bubble only where his live reaction matters (demonstrations). Was: when a graphic needs the full frame, keep the face on screen as a round bubble.
 - Show the real process as diagrams (logs, prices, timers, receipts) rather than describing it.
 - Headline habit: one accent word per headline in the accent colour or style (ours: gold on chrome).
 - (Nate Herk, Wiki 2026-11-04) Write every graphics-plan beat as "when he says X, show Y at <zone>, because <why>". Standing legibility rule: a card or scrim behind every element. Show the real artifact on screen at the word that claims it. Second source for the face-in-a-round-bubble layout while big cards explain.
 - (Albert Olgaard, Wiki 2026-11-04) "Coming up" preview card by 0:30; automatic blur of secrets found by OCR; screen card + tall camera card layout for full-screen demos; dot-stepper explainers; chapter-by-chapter review renders. Skip his re-export-through-CapCut metadata tip (unproven, and no CapCut).
+- (video-use, browser-use's open-source Claude Code editor, 30.5k GitHub stars, read 2026-11-04) Graphics need time to be read: about 3 s minimum for anything read, 5 to 7 s for a simple card, 8 to 14 s for a diagram. Hold at least 1 s after the last word before the end fade. Their cut rules (400 ms gap = clean, under 150 ms = never) went into edit-longform step 2.
+- (style-teaching guides, 2026-11-04) Taste is taught faster with examples than adjectives: keep 2 reference clips Coley likes and 2 he dislikes per format, with one line each on why. None collected yet; ask when he next gives a note.
+
+## Reference clips (examples teach taste faster than adjectives; style-guide research 2026-11-04)
+
+Two liked and two disliked per format, each with one line on why. Ask Coley for one whenever he gives a note.
+
+| Format | Clip (path or URL, with timestamp) | Liked / disliked | Why, in his words |
+|---|---|---|---|
+| long-form | | | |
+| long-form | | | |
+| Shorts | | | |
+| Shorts | | | |

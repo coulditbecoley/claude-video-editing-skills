@@ -1,0 +1,128 @@
+/* v5 design system. Layout units are 1920x1080 CSS px, rendered at 2x (3840x2160).
+   Look: near-black stage, ONE accent per scene (gold default, cyan alt), big centred elements, glass and glowing
+   frames, blur-in entrances (no bouncy pops). No em or en dashes in any copy. */
+@import url('../fonts/fonts.css');
+:root{
+  --bg:#05070b; --ink:#f5f1e8; --dim:#9aa3b5; --mute:#5d6678; --line:rgba(255,255,255,.10);
+  --gold:#f4b740; --gold2:#ffd98a; --cyan:#3fd6f2; --cyan2:#a5efff; --red:#ff5d5d; --green:#4ade80; --purple:#a78bfa;
+  --paper:#f3eee3; --paperink:#16181d;
+  --acc:var(--gold); --acc2:var(--gold2); --accrgb:244,183,64;
+  --sans:'Inter',system-ui,sans-serif; --disp:'Sora','Inter',sans-serif; --serif:'Instrument Serif',serif; --mono:'JetBrains Mono',monospace;
+}
+body.cyan{--acc:var(--cyan);--acc2:var(--cyan2);--accrgb:63,214,242}
+body.red{--acc:var(--red);--acc2:#ffb3b3;--accrgb:255,93,93}
+*{box-sizing:border-box}
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+body.alpha{background:transparent}
+html:has(body.alpha){background:transparent}
+
+/* ---------- stage ---------- */
+#bg{position:absolute;inset:0;z-index:0;background:
+  radial-gradient(1300px 760px at 50% -6%,rgba(var(--accrgb),.30),transparent 64%),
+  radial-gradient(1000px 640px at 86% 110%,rgba(var(--accrgb),.16),transparent 62%),
+  radial-gradient(1400px 900px at 50% 50%,#0b0f17 0%,#05070b 70%)}
+#bg.paper{background:radial-gradient(1500px 1000px at 50% 40%,#fbf8f1 0%,#e4ded1 78%,#cfc8b8 100%)}
+#dust{position:absolute;inset:0;z-index:1;width:1920px;height:1080px}
+#vig{position:absolute;inset:0;z-index:2;background:radial-gradient(1300px 800px at 50% 50%,transparent 55%,rgba(0,0,0,.55) 100%);pointer-events:none}
+#cam{position:absolute;inset:0;z-index:3;transform-origin:50% 50%;will-change:transform}
+.center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.abs{position:absolute}
+
+/* ---------- type ---------- */
+.h0{font-family:var(--disp);font-weight:800;font-size:150px;line-height:1.0;letter-spacing:-.035em}
+.h1{font-family:var(--disp);font-weight:800;font-size:104px;line-height:1.04;letter-spacing:-.03em}
+.h2{font-family:var(--disp);font-weight:700;font-size:68px;line-height:1.08;letter-spacing:-.025em}
+.h3{font-family:var(--disp);font-weight:700;font-size:44px;line-height:1.15;letter-spacing:-.02em}
+.body{font-size:36px;line-height:1.35;color:#d9dde6;font-weight:500}
+.small{font-size:26px;line-height:1.35;color:var(--dim);font-weight:500}
+.kick{font-family:var(--mono);font-weight:600;font-size:24px;letter-spacing:.22em;text-transform:uppercase;color:var(--acc)}
+.acc{color:var(--acc)} .dim{color:var(--dim)} .ink{color:var(--ink)}
+.grad{background:linear-gradient(180deg,#fff 0%,var(--acc2) 55%,var(--acc) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.num{font-family:var(--disp);font-weight:800;font-style:italic;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.serif{font-family:var(--serif);font-weight:400;letter-spacing:-.01em}
+.mono{font-family:var(--mono)}
+.glowtext{text-shadow:0 0 60px rgba(var(--accrgb),.55),0 0 18px rgba(var(--accrgb),.35)}
+.w{display:inline-block;white-space:pre}          /* a word, split by stage.js */
+
+/* ---------- components ---------- */
+/* context tag, top-left of a scene */
+.tag{position:absolute;left:72px;top:60px;display:inline-flex;align-items:center;gap:14px;padding:14px 26px 14px 20px;border-radius:999px;
+  background:rgba(14,18,26,.78);border:1.5px solid rgba(255,255,255,.12);font-size:25px;font-weight:600;color:#e8ecf3;
+  box-shadow:0 14px 40px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.08)}
+.tag i{width:12px;height:12px;border-radius:50%;background:var(--acc);box-shadow:0 0 16px var(--acc)}
+/* honesty labels: reconstruction, illustration, recorded estimate */
+.label{display:inline-flex;align-items:center;gap:10px;padding:8px 16px;border-radius:10px;font-family:var(--mono);font-weight:700;font-size:20px;
+  letter-spacing:.14em;text-transform:uppercase;color:#ffcf7a;background:rgba(244,183,64,.10);border:1.5px solid rgba(244,183,64,.45)}
+.label.red{color:#ff9d9d;background:rgba(255,93,93,.10);border-color:rgba(255,93,93,.5)}
+.label.cy{color:var(--cyan2);background:rgba(63,214,242,.10);border-color:rgba(63,214,242,.45)}
+.src{position:absolute;left:0;right:0;bottom:44px;text-align:center;font-size:23px;color:var(--mute);font-weight:500;letter-spacing:.01em}
+
+/* glass panel */
+.glass{position:relative;border-radius:36px;background:linear-gradient(155deg,rgba(28,34,46,.86),rgba(11,14,20,.90));
+  border:1.5px solid rgba(255,255,255,.11);box-shadow:0 50px 120px rgba(0,0,0,.6),0 0 0 1px rgba(0,0,0,.4),inset 0 1.5px 0 rgba(255,255,255,.10)}
+/* floating frame with an accent glow border: anything "real" (UI, footage, documents) lives in one */
+.frame{position:relative;border-radius:34px;background:#0a0d13;border:2.5px solid rgba(var(--accrgb),.85);overflow:hidden;
+  box-shadow:0 0 0 1px rgba(0,0,0,.6),0 0 44px rgba(var(--accrgb),.38),0 0 140px rgba(var(--accrgb),.20),0 60px 130px rgba(0,0,0,.7)}
+.frame>img,.frame>video{display:block;width:100%;height:100%;object-fit:cover}
+/* pill title that overlaps the top edge of a frame */
+.pill{position:absolute;left:50%;top:0;transform:translate(-50%,-52%);z-index:5;display:inline-flex;align-items:center;gap:16px;white-space:nowrap;
+  padding:16px 36px;border-radius:999px;background:linear-gradient(180deg,#141a24,#0a0d13);border:2px solid rgba(var(--accrgb),.9);
+  font-family:var(--disp);font-weight:700;font-size:34px;letter-spacing:-.01em;color:#fff;
+  box-shadow:0 0 34px rgba(var(--accrgb),.5),0 18px 40px rgba(0,0,0,.6)}
+.pill b{color:var(--acc);font-style:italic;font-weight:800}
+/* macOS-style window */
+.win{position:relative;border-radius:30px;background:linear-gradient(180deg,#161a22,#0d1016);border:1.5px solid rgba(255,255,255,.12);overflow:hidden;
+  box-shadow:0 60px 140px rgba(0,0,0,.7),0 0 120px rgba(var(--accrgb),.10),inset 0 1.5px 0 rgba(255,255,255,.10)}
+.win .bar{height:62px;display:flex;align-items:center;gap:12px;padding:0 26px;border-bottom:1.5px solid rgba(255,255,255,.07);
+  font-family:var(--mono);font-size:22px;color:var(--dim)}
+.win .bar s{width:16px;height:16px;border-radius:50%;background:#ff5f57;text-decoration:none}
+.win .bar s:nth-child(2){background:#febc2e}.win .bar s:nth-child(3){background:#28c840;margin-right:14px}
+/* numbered glass tile (chapter launcher, step lists) */
+.tile{position:relative;display:flex;align-items:center;gap:26px;height:112px;padding:0 34px 0 20px;border-radius:26px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));border:1.5px solid rgba(255,255,255,.12);
+  font-family:var(--disp);font-weight:700;font-size:38px;color:#eef1f6;box-shadow:inset 0 1.5px 0 rgba(255,255,255,.10),0 20px 40px rgba(0,0,0,.35)}
+.tile .n{flex:none;width:72px;height:72px;border-radius:20px;display:grid;place-items:center;font-family:var(--disp);font-style:italic;font-weight:800;
+  font-size:40px;color:var(--acc);background:rgba(var(--accrgb),.12);border:1.5px solid rgba(var(--accrgb),.4)}
+.tile.on{background:linear-gradient(180deg,rgba(var(--accrgb),.95),rgba(var(--accrgb),.72));border-color:rgba(255,255,255,.55);color:#14100a;
+  box-shadow:0 0 60px rgba(var(--accrgb),.55),0 0 160px rgba(var(--accrgb),.25),inset 0 2px 0 rgba(255,255,255,.55)}
+.tile.on .n{color:#14100a;background:rgba(0,0,0,.14);border-color:rgba(0,0,0,.25)}
+.tile.done{opacity:.42}
+.tile.todo .t{filter:blur(13px);opacity:.75}
+.tile .shine{position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.55) 50%,transparent 65%);transform:translateX(-130%)}
+/* lower-third chip (the main overlay on the talking head) */
+.chip{display:inline-flex;align-items:center;gap:16px;padding:18px 30px 18px 22px;border-radius:999px;background:rgba(10,13,19,.86);
+  border:1.5px solid rgba(255,255,255,.16);font-size:31px;font-weight:650;color:#f2f4f8;white-space:nowrap;
+  box-shadow:0 18px 50px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.10)}
+.chip i{flex:none;width:14px;height:14px;border-radius:50%;background:var(--acc);box-shadow:0 0 18px var(--acc)}
+.chip img{height:36px;width:36px;border-radius:9px}
+/* icon tile, dim until lit */
+.ico{width:170px;height:170px;border-radius:44px;display:grid;place-items:center;background:linear-gradient(160deg,#1b2130,#0c0f15);
+  border:1.5px solid rgba(255,255,255,.13);box-shadow:0 30px 70px rgba(0,0,0,.55),inset 0 1.5px 0 rgba(255,255,255,.12)}
+.ico img,.ico svg{width:92px;height:92px}
+.ico.lit{border-color:rgba(var(--accrgb),.9);box-shadow:0 0 50px rgba(var(--accrgb),.45),0 30px 70px rgba(0,0,0,.55),inset 0 1.5px 0 rgba(255,255,255,.2)}
+/* editorial paper card */
+.paper{position:relative;border-radius:22px;background:var(--paper);color:var(--paperink);box-shadow:0 60px 140px rgba(0,0,0,.65),0 0 0 1px rgba(0,0,0,.2)}
+.paper .serif{color:#14161a}
+mark{background:linear-gradient(180deg,transparent 12%,rgba(244,183,64,.75) 12%,rgba(244,183,64,.75) 92%,transparent 92%);background-repeat:no-repeat;
+  background-size:0% 100%;color:inherit;padding:0 .08em;margin:0 -.08em;border-radius:4px}
+del{text-decoration:none;position:relative;color:var(--red)}
+del::after{content:"";position:absolute;left:-2%;top:52%;height:.09em;width:104%;background:var(--red);border-radius:9px;transform:scaleX(var(--k,0));transform-origin:left}
+/* table, re-typeset large */
+.tbl{display:grid;gap:14px;width:100%}
+.tbl .r{display:grid;align-items:center;padding:26px 36px;border-radius:22px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);
+  font-size:34px;font-weight:600;color:#e9edf4}
+.tbl .r.hd{background:none;border-color:transparent;padding:0 36px 4px;font-family:var(--mono);font-size:21px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+.tbl .r.on{background:linear-gradient(90deg,rgba(var(--accrgb),.20),rgba(var(--accrgb),.05));border-color:rgba(var(--accrgb),.8);box-shadow:0 0 50px rgba(var(--accrgb),.22)}
+.tbl .r b{font-family:var(--disp);font-weight:800;font-style:italic;color:var(--acc);font-size:44px;letter-spacing:-.02em}
+/* code */
+.code{font-family:var(--mono);font-size:34px;line-height:1.6;color:#cfd6e4;white-space:pre}
+.code .c{color:#667089}.code .k{color:var(--purple)}.code .s{color:var(--green)}.code .n{color:var(--gold2)}.code .e{color:var(--red)}
+/* charts */
+svg text{font-family:var(--sans)}
+.axis{stroke:rgba(255,255,255,.14);stroke-width:1.5}
+.grid{stroke:rgba(255,255,255,.07);stroke-width:1.5}
+.tick{fill:var(--mute);font-size:22px;font-weight:500}
+.ln{fill:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+/* face window: a transparent rounded hole the talking head shows through (alpha scenes only) */
+.hole{position:absolute;border-radius:36px;box-shadow:0 0 0 2.5px rgba(var(--accrgb),.9),0 0 44px rgba(var(--accrgb),.4),0 40px 90px rgba(0,0,0,.6)}

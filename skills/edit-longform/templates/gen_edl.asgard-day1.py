@@ -7,11 +7,12 @@ edited timeline here, so a trim change never leaves a logo on the wrong word.
 Run: python gen_edl.py  ->  edit.edl.json
 """
 import json
+import os
 import re
 from pathlib import Path
 
 HERE = Path(__file__).parent
-V = "~/Projects/Youtube/videos"
+V = os.environ.get("EDIT_SRC_DIR", "~/Projects/Youtube/videos")   # pod: /workspace/edits/<job>/src
 MAIN = f"{V}/2026-09-25 12-34-31.mp4"
 OUTRO = f"{V}/2026-09-25 12-46-15.mp4"
 GFX = HERE / "graphics" / "out"

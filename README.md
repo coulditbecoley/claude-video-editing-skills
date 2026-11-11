@@ -22,6 +22,23 @@ retention data or a studied tutorial, and says where it came from.
 | `retention/yt_analytics.py` | Pulls per-video stats and 100-point retention curves from the YouTube Analytics API (read-only OAuth) to feed lessons back into the skills. |
 | `research/` | Breakdowns of AI-edited YouTube videos, watched frame by frame, with what was adopted. |
 
+## Start here for a talking-head video
+
+**The talking-head recipe is for talking-head videos only:** one person talking to camera, with no screen
+walkthrough. It is the edit the creator approved with no notes ("absolutely perfect", 2026-11-11).
+
+- The rules: the "Talking-head recipe" section in `longform/profile/taste.md`.
+- The worked example: `longform/library/2026-11-09 Claude Edits v5 (talking head)/` (scene engine in `graphics/`,
+  the pipeline scripts, the ElevenLabs sound kit list, and `example.md`).
+- The house motion style it follows: `skills/edit-longform/motion-style.md`.
+
+In short: claim-first opening with a raw-versus-finished demo, about 63% of the runtime as full-screen motion
+graphics landed on the spoken word, lower-third chips over the face, direct cuts and blur-ins, a quiet per-video
+sound kit, ducked music, and a second-agent audit before a 4K60 render.
+
+Screen-recording and walkthrough videos (facecam over a screen, zooms, app transitions) are a different kind of
+edit: use the general workflow in `skills/edit-longform/SKILL.md` and the earlier library folders for those.
+
 ## The pipeline in one paragraph
 
 Word-level Whisper transcripts (GPU) drive every cut, snapped to real silences; pauses collapse; retakes

@@ -23,13 +23,14 @@ v2 (Codex Shorts audit, Coley: "make all recommended short reel fixes"):
 Run: python gen_shorts.py  ->  s1.edl.json ... s6.edl.json  (renders caption PNGs via node)
 """
 import json
+import os
 import re
 import subprocess
 from pathlib import Path
 
 HERE = Path(__file__).parent
 EDIT = HERE.parent
-MAIN = "~/Projects/Youtube/videos/2026-10-01 10-19-41.mp4"
+MAIN = os.environ.get("EDIT_SRC", "~/Projects/Youtube/videos/2026-10-01 10-19-41.mp4")
 VOICE = str(EDIT / "audio" / "voice-main.wav")
 GFX = EDIT / "graphics" / "out"
 GFXS = EDIT / "graphics" / "out_shorts"
