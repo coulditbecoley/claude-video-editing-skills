@@ -190,3 +190,9 @@ Worked example: `edits/2026-11-03 Recording 0939/shorts/` (`gen_shorts.py`, `ren
 - **Music on the beat:** for a reel or montage, cut on a BPM grid (his showreel skill used 128 BPM).
 - **Hooks from outliers:** before scripting or cutting, pull 3 overperforming Shorts in the niche (vidIQ `outliers`, 5 credits,
   or YouTube search) and note their first-4-second hook pattern.
+
+## Graphic band design reference (2026-11-12)
+
+For any Short with a graphic band or full-screen graphic scene, read `../edit-longform/motion-style.md`, "Reference 3" (Hidden
+launch promo): fixed layout, one UI card that performs the claim through timed states, button colour as state, subline last,
+glitch cut and ticker tapes only at real section changes. Copy the grammar, never the brand; our palette.

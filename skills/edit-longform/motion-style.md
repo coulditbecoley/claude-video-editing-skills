@@ -90,3 +90,56 @@ above and adds these talking-head-plus-design moves. Wiki note: `FenrirVault/Wik
 - **Stock B-roll lives inside the frame too** (AR phone shot under "#3 Useful tool"): never full-bleed, always framed with the pill.
 - **Pacing:** face shots are short connective tissue (often 5 to 15 s) between graphic scenes; each pattern is roughly
   face intro, then 3 to 6 graphic scenes, then face takeaway. The sponsor-style plug is a PiP demo of his own landing page.
+
+## Reference 3: Hidden launch promo (x.com/Hiddenpad/status/2120894077063631084, 0:22, 16:9), added 2026-11-12
+
+Coley: add this "for the type of design and the quality that it brings". A 22 s product promo, no face and no voice (music only),
+all code-style motion graphics. Watched at 3 fps (66 frames). Same rule: copy the grammar, never its copy, brand, logo or colours.
+Ours stays gold and cyan on dark. Not confirmed that it was made in Remotion; nothing here depends on the tool.
+
+**Why it reads as high quality**
+- **One layout, held for the whole video.** Left third: a tiny mono kicker in spaced caps with a number ("02 / PRIVATE BALANCE"),
+  a huge heavy grotesk headline on two lines, one small subline. Right: ONE mock UI card, always the same size and place. The eye
+  never hunts; only the content changes.
+- **The UI card performs the claim instead of a list stating it.** Every scene is a small state machine: a form types itself with
+  a caret, the button goes action colour -> "Launching..." -> green "Live" with a tick, a checklist ticks one line at a time,
+  numbers in rows count to new values, a row morphs into a redacted label. Nothing just "appears".
+- **Button colour is the state.** Action = hot accent, done = second accent or green. Green is used only for success.
+- **The headline is animated data too.** A second headline line arrives when the second action happens ("PRIVATE BUY", then
+  "PRIVATE SELL" as the sell row lands). A number inside the headline counts up in the accent (62% -> 97% -> 100%) while the card
+  shows the matching figure.
+- **Subline lands last**, after the card finished its action, with the final clause in bold white ("Trackers see one pooled
+  vault. **Not you.**"). Kicker -> headline -> card action -> subline, every scene.
+- **Problem shown as a swarm.** The cold open ("You buy." / "They copy.", one line at a time) puts a crowd of coloured cursor
+  arrows with name tags onto one table row while a counter climbs ("2 bots watching" -> 9). The fix: the row is blacked out, every
+  tag flips to "404?" and the cursors scatter, the red status line turns calm. "Not anymore."
+- **Two accents with meanings**, not decoration: one for danger and action, one for the safe or finished state. Near-black
+  backdrop with a soft radial glow in one corner and a faint warm glow in the opposite one. Card = dark glass, thin border,
+  coloured glow under it.
+- **Type:** heavy grotesk for headlines (sentence case in the story open, uppercase for features), mono for all data, kickers
+  and tickers. Two-tone taglines (white claim, grey second half).
+
+**Transitions**
+- **Glitch cut:** 2 to 4 frames of horizontal bars streaking across plus one washed-out flash frame, then the new scene. Used
+  only at real section changes.
+- **Crossed ticker tapes:** a thick accent tape with bold caps and a thin dark mono tape, tilted a few degrees in opposite
+  directions, scrolling, with x separators and blacked-out bars between phrases. They wipe from story to features and come back
+  framing the closing headline, so the wipe is also a recap of the feature names.
+
+**End card**
+- Centred headline with one accent word, then the wordmark builds (the logo's own gimmick animates in last), two-tone tagline,
+  a mono micro line, and a pill that first appears as a solid accent bar and then resolves into "LIVE TODAY" with a pulsing dot.
+  Small persistent logo bottom-right through every feature scene. Fade to black.
+
+**Pacing (measured)**
+- 8 beats in 22 s: open 4 s, twist 2 s, four features at about 3 s each, tagline 1.5 s, end card 4 s. Inside a scene something
+  changes state every 0.3 to 0.5 s, and the finished state holds about 1 s before the cut.
+
+**Where we use it**
+- Cold opens, numbered feature rundowns ("what the skill does": cuts, graphics, music, render), product plugs, and the graphic
+  band in Shorts. For long-form with narration, slow each scene to the readable floors above (3 s read, 5 s card).
+- Build with the existing scene engine (`graphics/lib/stage.js`: `data-in/out/on/count/words/fx`). One scene template: kicker,
+  headline (second line and count-up optional), one card with timed states, subline last. Cursor swarm = absolutely positioned
+  tags with staggered `data-in` and a class flip at the fix.
+- Checks before shipping a scene in this style: card in the same place as the previous scene; every element has a state change,
+  not just an entrance; subline after the action; one accent meaning per colour; finished state held 1 s.
